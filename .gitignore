@@ -19,7 +19,6 @@ venv/
 *.xlsx
 *.xls
 data/
-patterns.json
 output/
 
 # OS
