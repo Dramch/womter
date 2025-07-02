@@ -1,5 +1,4 @@
 @echo off
-setlocal enabledelayedexpansion
 
 :: Default target
 if "%1"=="" (
