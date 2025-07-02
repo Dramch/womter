@@ -60,20 +60,36 @@ function Install-Dependencies {
     Write-Host "Installing dependencies..."
     try {
         & venv\Scripts\activate.ps1
-        pip install -r requirements.txt
+        & venv\Scripts\pip.exe install -r requirements.txt
         if ($LASTEXITCODE -ne 0) {
             Write-Host "ERROR: Could not install requirements" -ForegroundColor Red
             exit 1
         }
         Write-Host "Installing package in development mode..."
-        pip install -e .
+        & venv\Scripts\pip.exe install -e .
         if ($LASTEXITCODE -ne 0) {
             Write-Host "ERROR: Could not install package in development mode" -ForegroundColor Red
             exit 1
         }
     } catch {
         Write-Host "ERROR: Could not activate virtual environment" -ForegroundColor Red
-        exit 1
+        Write-Host "Trying alternative activation method..." -ForegroundColor Yellow
+        try {
+            & venv\Scripts\pip.exe install -r requirements.txt
+            if ($LASTEXITCODE -ne 0) {
+                Write-Host "ERROR: Could not install requirements" -ForegroundColor Red
+                exit 1
+            }
+            Write-Host "Installing package in development mode..."
+            & venv\Scripts\pip.exe install -e .
+            if ($LASTEXITCODE -ne 0) {
+                Write-Host "ERROR: Could not install package in development mode" -ForegroundColor Red
+                exit 1
+            }
+        } catch {
+            Write-Host "ERROR: Could not install packages" -ForegroundColor Red
+            exit 1
+        }
     }
 }
 
@@ -82,14 +98,24 @@ function Run-Womter {
     Write-Host "Running Womter with pattern matching..."
     try {
         & venv\Scripts\activate.ps1
-        python main.py
+        & venv\Scripts\python.exe main.py
         if ($LASTEXITCODE -ne 0) {
             Write-Host "ERROR: Could not run Womter" -ForegroundColor Red
             exit 1
         }
     } catch {
         Write-Host "ERROR: Could not run Womter" -ForegroundColor Red
-        exit 1
+        Write-Host "Trying alternative method..." -ForegroundColor Yellow
+        try {
+            & venv\Scripts\python.exe main.py
+            if ($LASTEXITCODE -ne 0) {
+                Write-Host "ERROR: Could not run Womter" -ForegroundColor Red
+                exit 1
+            }
+        } catch {
+            Write-Host "ERROR: Could not run Womter" -ForegroundColor Red
+            exit 1
+        }
     }
 }
 
@@ -98,14 +124,24 @@ function Run-WomterAll {
     Write-Host "Running Womter without pattern matching..."
     try {
         & venv\Scripts\activate.ps1
-        python main.py --no-patterns
+        & venv\Scripts\python.exe main.py --no-patterns
         if ($LASTEXITCODE -ne 0) {
             Write-Host "ERROR: Could not run Womter" -ForegroundColor Red
             exit 1
         }
     } catch {
         Write-Host "ERROR: Could not run Womter" -ForegroundColor Red
-        exit 1
+        Write-Host "Trying alternative method..." -ForegroundColor Yellow
+        try {
+            & venv\Scripts\python.exe main.py --no-patterns
+            if ($LASTEXITCODE -ne 0) {
+                Write-Host "ERROR: Could not run Womter" -ForegroundColor Red
+                exit 1
+            }
+        } catch {
+            Write-Host "ERROR: Could not run Womter" -ForegroundColor Red
+            exit 1
+        }
     }
 }
 

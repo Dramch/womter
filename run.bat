@@ -54,18 +54,18 @@ goto end
 :install
 call :venv
 echo Installing dependencies...
-call venv\Scripts\activate
+call venv\Scripts\activate.bat
 if errorlevel 1 (
     echo ERROR: Could not activate virtual environment
     exit /b 1
 )
-pip install -r requirements.txt
+venv\Scripts\pip.exe install -r requirements.txt
 if errorlevel 1 (
     echo ERROR: Could not install requirements
     exit /b 1
 )
 echo Installing package in development mode...
-pip install -e .
+venv\Scripts\pip.exe install -e .
 if errorlevel 1 (
     echo ERROR: Could not install package in development mode
     exit /b 1
@@ -75,8 +75,8 @@ goto end
 :run
 call :install
 echo Running Womter with pattern matching...
-call venv\Scripts\activate
-python main.py
+call venv\Scripts\activate.bat
+venv\Scripts\python.exe main.py
 if errorlevel 1 (
     echo ERROR: Could not run Womter
     exit /b 1
@@ -86,8 +86,8 @@ goto end
 :run-all
 call :install
 echo Running Womter without pattern matching...
-call venv\Scripts\activate
-python main.py --no-patterns
+call venv\Scripts\activate.bat
+venv\Scripts\python.exe main.py --no-patterns
 if errorlevel 1 (
     echo ERROR: Could not run Womter
     exit /b 1
