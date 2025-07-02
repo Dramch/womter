@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Environment variables
+.env
+
+# Data files
+*.xlsx
+*.xls
+data/
+patterns.json
+output/
+
+# OS
+.DS_Store
+Thumbs.db 

@@ -1,0 +1,2 @@
+[console_scripts]
+womter = womter.reader:read_excel_file

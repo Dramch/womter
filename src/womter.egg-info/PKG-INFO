@@ -1,3 +1,26 @@
+Metadata-Version: 2.4
+Name: womter
+Version: 1.0.0
+Summary: A simple Python package for reading and displaying Excel file contents
+Author-email: Your Name <your.email@example.com>
+Project-URL: Homepage, https://github.com/yourusername/womter
+Project-URL: Repository, https://github.com/yourusername/womter.git
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: pandas>=2.2.0
+Requires-Dist: openpyxl>=3.1.2
+Requires-Dist: python-dotenv>=1.0.0
+
 # Womter Project
 
 A professional Python package for reading and displaying contents from Excel files (XLSX format).
