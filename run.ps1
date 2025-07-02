@@ -18,8 +18,27 @@ if ($Command -eq "") {
 function Create-Venv {
     Write-Host "Creating Python virtual environment..."
     if (-not (Test-Path "venv")) {
-        python -m venv venv
-        Write-Host "Virtual environment created"
+        $pythonCommands = @("python", "python3", "py")
+        $venvCreated = $false
+        
+        foreach ($cmd in $pythonCommands) {
+            try {
+                & $cmd -m venv venv 2>$null
+                if (Test-Path "venv") {
+                    Write-Host "Virtual environment created using $cmd"
+                    $venvCreated = $true
+                    break
+                }
+            } catch {
+                continue
+            }
+        }
+        
+        if (-not $venvCreated) {
+            Write-Host "ERROR: Could not create virtual environment. Please ensure Python is installed and in PATH." -ForegroundColor Red
+            Write-Host "Try running: python --version or python3 --version" -ForegroundColor Yellow
+            exit 1
+        }
     } else {
         Write-Host "Virtual environment already exists"
     }
@@ -39,24 +58,55 @@ function Setup-Environment {
 function Install-Dependencies {
     Create-Venv
     Write-Host "Installing dependencies..."
-    & venv\Scripts\activate.ps1
-    pip install -r requirements.txt
-    Write-Host "Installing package in development mode..."
-    pip install -e .
+    try {
+        & venv\Scripts\activate.ps1
+        pip install -r requirements.txt
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host "ERROR: Could not install requirements" -ForegroundColor Red
+            exit 1
+        }
+        Write-Host "Installing package in development mode..."
+        pip install -e .
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host "ERROR: Could not install package in development mode" -ForegroundColor Red
+            exit 1
+        }
+    } catch {
+        Write-Host "ERROR: Could not activate virtual environment" -ForegroundColor Red
+        exit 1
+    }
 }
 
 function Run-Womter {
     Install-Dependencies
     Write-Host "Running Womter with pattern matching..."
-    & venv\Scripts\activate.ps1
-    python main.py
+    try {
+        & venv\Scripts\activate.ps1
+        python main.py
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host "ERROR: Could not run Womter" -ForegroundColor Red
+            exit 1
+        }
+    } catch {
+        Write-Host "ERROR: Could not run Womter" -ForegroundColor Red
+        exit 1
+    }
 }
 
 function Run-WomterAll {
     Install-Dependencies
     Write-Host "Running Womter without pattern matching..."
-    & venv\Scripts\activate.ps1
-    python main.py --no-patterns
+    try {
+        & venv\Scripts\activate.ps1
+        python main.py --no-patterns
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host "ERROR: Could not run Womter" -ForegroundColor Red
+            exit 1
+        }
+    } catch {
+        Write-Host "ERROR: Could not run Womter" -ForegroundColor Red
+        exit 1
+    }
 }
 
 function Clean-Project {

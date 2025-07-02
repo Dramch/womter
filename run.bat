@@ -27,8 +27,14 @@ exit /b 1
 :venv
 echo Creating Python virtual environment...
 if not exist "venv" (
-    python -m venv venv
-    echo Virtual environment created
+    python -m venv venv 2>nul || python3 -m venv venv 2>nul || py -m venv venv 2>nul
+    if exist "venv" (
+        echo Virtual environment created
+    ) else (
+        echo ERROR: Could not create virtual environment. Please ensure Python is installed and in PATH.
+        echo Try running: python --version or python3 --version
+        exit /b 1
+    )
 ) else (
     echo Virtual environment already exists
 )
@@ -48,21 +54,44 @@ goto end
 :install
 call :venv
 echo Installing dependencies...
-call venv\Scripts\activate && pip install -r requirements.txt
+call venv\Scripts\activate
+if errorlevel 1 (
+    echo ERROR: Could not activate virtual environment
+    exit /b 1
+)
+pip install -r requirements.txt
+if errorlevel 1 (
+    echo ERROR: Could not install requirements
+    exit /b 1
+)
 echo Installing package in development mode...
-call venv\Scripts\activate && pip install -e .
+pip install -e .
+if errorlevel 1 (
+    echo ERROR: Could not install package in development mode
+    exit /b 1
+)
 goto end
 
 :run
 call :install
 echo Running Womter with pattern matching...
-call venv\Scripts\activate && python main.py
+call venv\Scripts\activate
+python main.py
+if errorlevel 1 (
+    echo ERROR: Could not run Womter
+    exit /b 1
+)
 goto end
 
 :run-all
 call :install
 echo Running Womter without pattern matching...
-call venv\Scripts\activate && python main.py --no-patterns
+call venv\Scripts\activate
+python main.py --no-patterns
+if errorlevel 1 (
+    echo ERROR: Could not run Womter
+    exit /b 1
+)
 goto end
 
 :clean
