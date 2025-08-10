@@ -81,12 +81,20 @@ def collect_tweets(max_tweets):
             next_token = None
             while count[lang] < amount_tweets:
                 data = get_tweets(query, next_token)
+                write_row_to_backup(data)
+
+                user_lookup = {u["id"]: u for u in data.get("includes", {}).get("users", [])}
+                media_lookup = {m["media_key"]: m for m in data.get("includes", {}).get("media", [])}
+
                 for tweet in data["data"]:
                     if tweet["id"] in seen_ids:
                         continue
                     seen_ids.add(tweet["id"])
+                    tweet["includes"] = {
+                        "users": [user_lookup[tweet["author_id"]]],
+                        "media": [media_lookup[mk] for mk in tweet.get("attachments", {}).get("media_keys", [])],
+                    }
                     rows.append(tweet)
-                    write_row_to_backup(tweet)
                     count[lang] += 1
             if "next_token" in data["meta"]:
                 next_token = data["meta"]["next_token"]

@@ -44,9 +44,8 @@ def write_row_to_backup(row):
 
 def _extract_tweet_data(row):
     """Extract and format tweet data from a row"""
-    user_data = row.get("author_id", {})
-    if not isinstance(user_data, dict):
-        user_data = {}
+    user_data = row.get("includes", {}).get("users", {})
+    user_data = user_data[0] if isinstance(user_data, list) else user_data
     
     pm = row.get("public_metrics", {})
     if not isinstance(pm, dict):
@@ -59,6 +58,7 @@ def _extract_tweet_data(row):
         "texto": row.get("text", ""),
         "usuario": user_data.get("username", "") if isinstance(user_data, dict) else "",
         "usuario_verified": user_data.get("verified", "") if isinstance(user_data, dict) else "",
+        "usuario_verified_type": user_data.get("verified_type", "") if isinstance(user_data, dict) else "",
         "usuario_ubicacion": user_data.get("location", "") if isinstance(user_data, dict) else "",
         "seguidores": user_data.get("public_metrics", {}).get("followers_count", "") if isinstance(user_data, dict) and isinstance(user_data.get("public_metrics"), dict) else "",
         "siguiendo": user_data.get("public_metrics", {}).get("following_count", "") if isinstance(user_data, dict) and isinstance(user_data.get("public_metrics"), dict) else "",
@@ -105,7 +105,7 @@ def _add_worksheet_with_data(wb, language, data_rows):
     # Define headers
     headers = [
         "Tweet ID", "Fecha", "Lenguaje", "Texto", "Usuario", 
-        "Verificado", "Ubicación", "Seguidores", "Siguiendo", 
+        "Verificado", "Tipo de Verificación", "Ubicación", "Seguidores", "Siguiendo", 
         "Tweets", "Retweets", "Replies", "Likes", "Quotes",
         "User Dump", "Public Metrics Dump", "Tweet Dump"
     ]
