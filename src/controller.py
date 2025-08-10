@@ -30,6 +30,8 @@ def make_query(lang, terms):
         return []
     query += ")"
     query += f" lang:{lang} -is:retweet"
+    if settings.ONLY_VERIFIED:
+        query += " is:verified"
     queries.append(query)
     return queries
 

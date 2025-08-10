@@ -6,6 +6,7 @@ load_dotenv()
 class Settings:
     TOKEN_KEY = os.getenv("TOKEN_KEY")
     AMOUNT_TWEETS = os.getenv("AMOUNT_TWEETS")
+    ONLY_VERIFIED = os.getenv("ONLY_VERIFIED", "True").lower() == "true"
     SLEEP_TIME = os.getenv("SLEEP_TIME")
     BASE_URL = os.getenv("BASE_URL")
     TWEET_FIELDS = os.getenv("TWEET_FIELDS", "id,text,created_at,author_id,lang,public_metrics")
