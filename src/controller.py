@@ -58,6 +58,9 @@ def get_tweets(query, next_token=None):
     except Exception as e:
         print(f"Error: {e}")
         return None
+
+    if response.headers:
+        print(f"Headers: {response.headers}")
     
     # from mocks import dummy_collect_tweets
     # response = dummy_collect_tweets()
