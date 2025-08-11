@@ -83,6 +83,7 @@ def collect_tweets(max_tweets):
         queries = make_query(lang, terms)
         amount_tweets = math.ceil(max_tweets / len(settings.TERMS))
         for query in queries:
+            print(f"Collecting tweets for query: {query}")
             next_token = None
             while count[lang] < amount_tweets:
                 data = get_tweets(query, next_token)
