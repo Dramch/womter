@@ -59,7 +59,7 @@ def get_tweets(query, next_token=None):
         print(f"Error: {e}")
         return None
 
-    if response.headers:
+    if response.headers is not None:
         print(f"Headers: {response.headers}")
     
     # from mocks import dummy_collect_tweets
