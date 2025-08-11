@@ -60,7 +60,7 @@ def get_tweets(query, next_token=None):
         return None
 
     if response.headers is not None:
-        print(f"Headers: {response.headers}")
+        print(f"Requests Remaining: {response.headers["x-rate-limit-remaining"]}")
     
     # from mocks import dummy_collect_tweets
     # response = dummy_collect_tweets()
