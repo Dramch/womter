@@ -5,10 +5,12 @@ load_dotenv()
 
 class Settings:
     TOKEN_KEY = os.getenv("TOKEN_KEY")
+    GENDER_API_KEY = os.getenv("GENDER_API_KEY")
     AMOUNT_TWEETS = os.getenv("AMOUNT_TWEETS")
     ONLY_VERIFIED = os.getenv("ONLY_VERIFIED", "True").lower() == "true"
     SLEEP_TIME = os.getenv("SLEEP_TIME")
     BASE_URL = os.getenv("BASE_URL")
+    GENDER_URL = os.getenv("GENDER_URL")
     TWEET_FIELDS = os.getenv("TWEET_FIELDS", "id,text,created_at,author_id,lang,public_metrics")
     USER_FIELDS = os.getenv("USER_FIELDS", "username,verified,location,public_metrics")
     EXPANSION_FIELDS = os.getenv("EXPANSION_FIELDS", "author_id")
@@ -21,6 +23,10 @@ class Settings:
         raise ValueError("TOKEN_KEY is not set")
     if not AMOUNT_TWEETS:
         raise ValueError("AMOUNT_TWEETS is not set")
+    if not GENDER_API_KEY:
+        raise ValueError("GENDER_API_KEY is not set")
+    if not GENDER_URL:
+        raise ValueError("GENDER_URL is not set")
     if not SLEEP_TIME:
         raise ValueError("SLEEP_TIME is not set")
     if not BASE_URL:

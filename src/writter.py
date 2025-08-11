@@ -1,6 +1,8 @@
 import os
 import json
 from datetime import datetime
+
+import requests
 from settings import settings
 import pandas as pd
 from openpyxl import Workbook
@@ -42,6 +44,24 @@ def write_row_to_backup(row):
             f.write(f"Error dumping row: {str(e)}\n")
             f.write(f"Row content: {str(row)}\n")
 
+def _get_gender(user_data):
+    if not "name" in user_data:
+        return "Desconocido"
+    name = user_data["name"]
+    params = {
+        "name": name,
+        "key": settings.GENDER_API_KEY
+    }
+    try:
+        response = requests.get(settings.GENDER_URL, params=params, timeout=20)
+    except Exception as e:
+        print(f"Error getting gender for {name}: {e}")
+        return "Desconocido"
+
+    if response.status_code == 200:
+        print(f"Gender for {name}: {response.json()}")
+        return response.json()["gender"]
+
 def _extract_tweet_data(row):
     """Extract and format tweet data from a row"""
     user_data = row.get("includes", {}).get("users", {})
@@ -57,6 +77,8 @@ def _extract_tweet_data(row):
         "lenguaje": row.get("lang", ""),
         "texto": row.get("text", ""),
         "usuario": user_data.get("username", "") if isinstance(user_data, dict) else "",
+        "usuario_nombre": user_data.get("name", "") if isinstance(user_data, dict) else "",
+        "usuario_genero": _get_gender(user_data),
         "usuario_verified": user_data.get("verified", "") if isinstance(user_data, dict) else "",
         "usuario_verified_type": user_data.get("verified_type", "") if isinstance(user_data, dict) else "",
         "usuario_ubicacion": user_data.get("location", "") if isinstance(user_data, dict) else "",
@@ -104,7 +126,7 @@ def _add_worksheet_with_data(wb, language, data_rows):
     
     # Define headers
     headers = [
-        "Tweet ID", "Fecha", "Lenguaje", "Texto", "Usuario", 
+        "Tweet ID", "Fecha", "Lenguaje", "Texto", "Usuario", "Usuario Nombre", "Usuario Genero",
         "Verificado", "Tipo de Verificación", "Ubicación", "Seguidores", "Siguiendo", 
         "Tweets", "Retweets", "Replies", "Likes", "Quotes",
         "User Dump", "Public Metrics Dump", "Tweet Dump"
