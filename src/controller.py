@@ -85,6 +85,9 @@ def collect_tweets(max_tweets):
                 data = get_tweets(query, next_token)
                 write_row_to_backup(data)
 
+                if not data.get("data"):
+                    break
+
                 user_lookup = {u["id"]: u for u in data.get("includes", {}).get("users", [])}
                 media_lookup = {m["media_key"]: m for m in data.get("includes", {}).get("media", [])}
 
@@ -98,11 +101,11 @@ def collect_tweets(max_tweets):
                     }
                     rows.append(tweet)
                     count[lang] += 1
-            if "next_token" in data["meta"]:
+
+                if "next_token" not in data["meta"]:
+                    break
                 next_token = data["meta"]["next_token"]
-            else:
-                break
-            time.sleep(int(settings.SLEEP_TIME))
+                time.sleep(int(settings.SLEEP_TIME))
 
                
     return rows, count
