@@ -1,5 +1,5 @@
 .PHONY: all develop start start-api start-analyzer start-merger clean install-deps \
-         analyzer-setup analyzer-install analyzer-run analyzer-run-all analyzer-clean analyzer-all analyzer-start \
+         analyzer-setup analyzer-install analyzer-run analyzer-run-all analyzer-copy-latest analyzer-clean analyzer-all analyzer-start \
          api-develop api-start api-clean \
          merger-develop merger-start merger-clean merger-data-copy
 
@@ -55,6 +55,10 @@ ifeq ($(OS),Windows_NT)
 
   analyzer-clean: develop
 	@make -C analyzer clean
+
+
+  analyzer-copy-latest: develop
+	@make -C analyzer copy-latest
 
   analyzer-all: develop
 	@make -C analyzer all
@@ -132,6 +136,9 @@ else
 
   analyzer-run-all: develop
 	@make -C analyzer run-all
+
+  analyzer-copy-latest: develop
+	@make -C analyzer copy-latest
 
   analyzer-clean: develop
 	@make -C analyzer clean

@@ -1,13 +1,3 @@
-#!/usr/bin/env python3
-"""
-Data reader for the merger application.
-
-This module efficiently reads all data files from the input directory,
-loads them into memory, and removes duplicate rows while preserving
-the first occurrence of each unique row. It also handles Excel files
-with multiple language tabs and organizes data by language.
-"""
-
 import os
 import pandas as pd
 import glob

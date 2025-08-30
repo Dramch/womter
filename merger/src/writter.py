@@ -1,11 +1,3 @@
-#!/usr/bin/env python3
-"""
-Data writer for the merger application.
-
-This module writes data from a dictionary to an XLSX file with language-specific tabs
-and an "all" tab containing all the data. It preserves the original column order
-and handles Excel file creation efficiently.
-"""
 
 import os
 import pandas as pd
