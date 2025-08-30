@@ -1,0 +1,12 @@
+README.md
+pyproject.toml
+src/womter/__init__.py
+src/womter/excel_writer.py
+src/womter/pattern_matcher.py
+src/womter/reader.py
+src/womter.egg-info/PKG-INFO
+src/womter.egg-info/SOURCES.txt
+src/womter.egg-info/dependency_links.txt
+src/womter.egg-info/entry_points.txt
+src/womter.egg-info/requires.txt
+src/womter.egg-info/top_level.txt
