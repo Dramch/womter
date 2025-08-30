@@ -1,52 +1,33 @@
-#!/usr/bin/env python3
-"""
-Main entry point for the Womter application.
-
-This script provides a command-line interface to read and display Excel file contents
-with pattern matching capabilities.
-"""
-
 import sys
 import os
-import argparse
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-# Add src to Python path so we can import our package
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
-
-from womter.reader import read_excel_file
+from pattern_reader import PatternReader
+from data_reader import DataReader
+from analyzer import Analyzer
+from writter import Writter
 
 
 def main():
-    """Main function to run the Womter application."""
-    parser = argparse.ArgumentParser(
-        description="Read and filter Excel files based on patterns",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
-Examples:
-  python main.py                    # Use patterns from .env file
-  python main.py --no-patterns      # Show all data without filtering
-  python main.py --help             # Show this help message
-        """
-    )
+    """Main function to run the analyzer application and apply patterns to data."""
+    # Load patterns
+    pattern_reader = PatternReader("data/patterns")
+    patterns = pattern_reader.read_patterns()
     
-    parser.add_argument(
-        '--no-patterns',
-        action='store_true',
-        help='Show all data without applying pattern matching'
-    )
+    # Load data
+    data_reader = DataReader("data/input")
+    data = data_reader.read_all_files()
     
-    args = parser.parse_args()
+    # Analyze data with patterns
+    analyzer = Analyzer("data/log")
+    results = analyzer.apply_patterns(data, patterns)
     
-    try:
-        use_patterns = not args.no_patterns
-        read_excel_file(use_patterns=use_patterns)
-    except ValueError as e:
-        print(f"Configuration Error: {e}")
-        sys.exit(1)
-    except Exception as e:
-        print(f"Unexpected error: {e}")
-        sys.exit(1)
+    # Write results to XLSX file
+    writter = Writter("data/log")
+    output_file = writter.write_analysis_results(results, patterns, "data/output")
+    
+    print(f"Analysis completed successfully! Results saved to: {output_file}")
 
 
 if __name__ == "__main__":
-    main() 
+    main()

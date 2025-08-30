@@ -32,3 +32,8 @@ output/
 # OS
 .DS_Store
 Thumbs.db 
+
+*.egg-info/
+*.egg
+dist/
+build/
