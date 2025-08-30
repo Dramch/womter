@@ -1,49 +1,52 @@
-.PHONY: setup install run clean help venv
+.PHONY: setup install run clean help start
 
-# Detect OS
+PROGRAM_NAME="analyzer"
+
+# Detect OS and use root venv
 ifeq ($(OS),Windows_NT)
-    PYTHON := python
-    VENV_ACTIVATE := venv\Scripts\activate
+    PYTHON := ..\venv\Scripts\python.exe
+    PIP := ..\venv\Scripts\pip.exe
     RM := rmdir /s /q
     FIND := powershell -Command "Get-ChildItem -Recurse -Include"
     MKDIR := mkdir
 else
-    PYTHON := python3
-    VENV_ACTIVATE := source venv/bin/activate
+    PYTHON := ../venv/bin/python
+    PIP := ../venv/bin/pip
     RM := rm -rf
     FIND := find . -name
     MKDIR := mkdir -p
 endif
 
-# Default target
-help:
+# Default target - show available commands (like .bat file did)
+start:
 	@echo "Available commands:"
-	@echo "  make venv    - Create Python virtual environment"
-	@echo "  make setup   - Create .env file from template"
-	@echo "  make install - Install Python dependencies and package"
-	@echo "  make run     - Run Womter with pattern matching"
-	@echo "  make run-all - Run Womter without pattern matching"
-	@echo "  make clean   - Remove Python cache files and venv"
-	@echo "  make all     - Setup venv, install, and run"
+	@echo "  make start     - Show this help message"
+	@echo "  make setup     - Create .env file from template"
+	@echo "  make install   - Install Python dependencies and package"
+	@echo "  make run       - Run Womter with pattern matching"
+	@echo "  make run-all   - Run Womter without pattern matching"
+	@echo "  make clean     - Remove Python cache files"
+	@echo "  make all       - Setup, install, and run"
+	@echo "  make help      - Show detailed help"
 
-# Create Python virtual environment
-venv:
-	@echo "Creating Python virtual environment..."
-ifeq ($(OS),Windows_NT)
-	@if not exist "venv" ( \
-		$(PYTHON) -m venv venv && \
-		echo Virtual environment created \
-	) else ( \
-		echo Virtual environment already exists \
-	)
-else
-	@if [ ! -d "venv" ]; then \
-		$(PYTHON) -m venv venv; \
-		echo "Virtual environment created"; \
-	else \
-		echo "Virtual environment already exists"; \
-	fi
-endif
+# Help target
+help:
+	@echo "=== $(PROGRAM_NAME) Makefile Help ==="
+	@echo ""
+	@echo "Available commands:"
+	@echo "  make start     - Show available commands"
+	@echo "  make setup     - Create .env file from template"
+	@echo "  make install   - Install Python dependencies and package"
+	@echo "  make run       - Run Womter with pattern matching"
+	@echo "  make run-all   - Run Womter without pattern matching"
+	@echo "  make clean     - Remove Python cache files"
+	@echo "  make all       - Setup, install, and run"
+	@echo ""
+	@echo "Examples:"
+	@echo "  make run       # Run with pattern matching"
+	@echo "  make run-all   # Run without pattern matching"
+	@echo "  make setup     # Create .env file"
+	@echo "  make clean     # Clean cache files"
 
 # Create .env file from template
 setup:
@@ -67,59 +70,35 @@ else
 endif
 
 # Install Python dependencies
-install: venv
+install:
 	@echo "Installing dependencies..."
-ifeq ($(OS),Windows_NT)
-	@$(VENV_ACTIVATE) && pip install -r requirements.txt
+	@$(PIP) install -r requirements.txt
 	@echo "Installing package in development mode..."
-	@$(VENV_ACTIVATE) && pip install -e .
-else
-	@$(VENV_ACTIVATE) && pip install -r requirements.txt
-	@echo "Installing package in development mode..."
-	@$(VENV_ACTIVATE) && pip install -e .
-endif
+	@$(PIP) install -e .
 
 # Run the Womter program
 run: install
 	@echo "Running Womter with pattern matching..."
-ifeq ($(OS),Windows_NT)
-	@$(VENV_ACTIVATE) && python main.py
-else
-	@$(VENV_ACTIVATE) && python main.py
-endif
+	@$(PYTHON) src/main.py
 
 # Run the Womter program without patterns
 run-all: install
 	@echo "Running Womter without pattern matching..."
-ifeq ($(OS),Windows_NT)
-	@$(VENV_ACTIVATE) && python main.py --no-patterns
-else
-	@$(VENV_ACTIVATE) && python main.py --no-patterns
-endif
+	@$(PYTHON) src/main.py --no-patterns
 
-
-
-# Clean Python cache files and virtual environment
+# Clean Python cache files
 clean:
-	@echo "Cleaning cache files and virtual environment..."
+	@echo "Cleaning cache files..."
 ifeq ($(OS),Windows_NT)
 	@powershell -Command "Get-ChildItem -Recurse -Include '__pycache__' -Directory | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue"
 	@powershell -Command "Get-ChildItem -Recurse -Include '*.pyc' | Remove-Item -Force -ErrorAction SilentlyContinue"
 	@powershell -Command "Get-ChildItem -Recurse -Include '*.pyo' | Remove-Item -Force -ErrorAction SilentlyContinue"
 	@powershell -Command "Get-ChildItem -Recurse -Include '*.egg-info' -Directory | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue"
-	@if exist "venv" ( \
-		$(RM) venv && \
-		echo Virtual environment removed \
-	)
 else
 	@find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
 	@find . -name "*.pyc" -delete 2>/dev/null || true
 	@find . -name "*.pyo" -delete 2>/dev/null || true
 	@find . -name "*.egg-info" -exec rm -rf {} + 2>/dev/null || true
-	@if [ -d "venv" ]; then \
-		rm -rf venv; \
-		echo "Virtual environment removed"; \
-	fi
 endif
 
 # Setup, install, and run
