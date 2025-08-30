@@ -23,7 +23,7 @@ ifeq ($(OS),Windows_NT)
 	@$(PIP) install -r requirements.txt
 	@$(PIP) install -e .
 
-  start: develop
+  start: develop copy-latest
 	@echo "Use 'make start-analyzer' to run the analyzer"
 
   start-analyzer: develop
@@ -91,7 +91,7 @@ else
 	@$(PIP) install -r requirements.txt
 	@$(PIP) install -e .
 
-  start: develop
+  start: develop, copy-latest
 	@echo "Use 'make start-analyzer' to run the analyzer"
 
   start-analyzer: develop
