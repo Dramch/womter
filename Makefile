@@ -32,7 +32,7 @@ ifeq ($(OS),Windows_NT)
 	@make -C api start
 
   start-analyzer: develop
-	@make -C analyzer run
+	@make -C analyzer start
 
   start-merger: develop
 	@make -C merger start
@@ -116,7 +116,7 @@ else
 	@make -C api start
 
   start-analyzer: develop
-	@make -C analyzer run
+	@make -C analyzer start
 
   start-merger: develop
 	@make -C merger start
