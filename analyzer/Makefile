@@ -95,7 +95,7 @@ else
 	@$(PIP) install -r requirements.txt
 	@$(PIP) install -e .
 
-  start: develop, copy-latest
+  start: develop copy-latest
 	@echo "Cleaning previous log files..."
 	@rm -rf data/logs/*
 	@mkdir -p data/logs
