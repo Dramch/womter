@@ -63,7 +63,9 @@ class DataReader:
         Returns:
             Dict[str, pd.DataFrame]: Dictionary with language as key and DataFrame as value
         """
+        # Create input directory if it doesn't exist
         if not self.input_dir.exists():
+            self.input_dir.mkdir(parents=True, exist_ok=True)
             raise FileNotFoundError(f"Input directory {self.input_dir} does not exist")
             
         # Get all Excel files in the input directory

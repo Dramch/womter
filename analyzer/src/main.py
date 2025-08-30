@@ -19,11 +19,11 @@ def main():
     data = data_reader.read_all_files()
     
     # Analyze data with patterns
-    analyzer = Analyzer("data/log")
+    analyzer = Analyzer()
     results = analyzer.apply_patterns(data, patterns)
     
     # Write results to XLSX file
-    writter = Writter("data/log")
+    writter = Writter()
     output_file = writter.write_analysis_results(results, patterns, "data/output")
     
     print(f"Analysis completed successfully! Results saved to: {output_file}")

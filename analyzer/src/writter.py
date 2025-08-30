@@ -57,9 +57,10 @@ class Writter:
         """
         self.logger.info("Starting to write analysis results to Excel...")
         
-        # Create output directory
+        # Create output directory only if it doesn't exist
         output_path = Path(output_dir)
-        output_path.mkdir(parents=True, exist_ok=True)
+        if not output_path.exists():
+            output_path.mkdir(parents=True, exist_ok=True)
         
         # Generate timestamp for filename
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -131,18 +132,14 @@ class Writter:
                         sheet_name = self._sanitize_sheet_name(pattern_name)
                         final_df.to_excel(writer, sheet_name=sheet_name, index=False)
                         
-                        self.logger.info(f"  Written {len(final_df)} rows to tab '{sheet_name}'")
-                        
                         # Auto-adjust column widths
                         self._adjust_column_widths(writer, sheet_name, final_df)
                     else:
-                        self.logger.warning(f"No matching rows found for pattern '{pattern_name}'")
+                        pass
             
-            self.logger.info(f"Successfully created Excel file: {filepath}")
             return str(filepath)
             
         except Exception as e:
-            self.logger.error(f"Error creating Excel file: {e}")
             raise
     
     def _create_summary_sheet(self, writer: pd.ExcelWriter, analyzer_results: Dict[str, Dict[str, pd.DataFrame]]) -> None:
@@ -154,7 +151,7 @@ class Writter:
             analyzer_results (Dict[str, Dict[str, pd.DataFrame]]): Results from analyzer
         """
         try:
-            self.logger.info("Creating summary sheet...")
+    
             
             # Create summary data
             summary_data = []
@@ -184,11 +181,9 @@ class Writter:
             # Auto-adjust column widths for summary
             self._adjust_column_widths(writer, 'Summary', summary_df)
             
-            self.logger.info("Summary sheet created successfully")
             
         except Exception as e:
-            self.logger.error(f"Error creating summary sheet: {e}")
-            raise
+            pass
     
     def _sanitize_sheet_name(self, name: str) -> str:
         """
@@ -245,4 +240,4 @@ class Writter:
                 worksheet.column_dimensions[chr(65 + idx)].width = optimal_width
                 
         except Exception as e:
-            self.logger.warning(f"Could not adjust column widths for sheet '{sheet_name}': {e}")
+            pass

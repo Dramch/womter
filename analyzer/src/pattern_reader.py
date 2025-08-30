@@ -9,16 +9,22 @@ from typing import Dict, Any, List, Tuple
 
 class PatternReader:
     def __init__(self, patterns_dir: str = "data/patterns", examples_dir: str = "data/patterns/examples"):
-        self.patterns_dir = patterns_dir
-        self.examples_dir = examples_dir
-        self.template_path = os.path.join(examples_dir, "template.json")
-        self.log_dir = "data/log"
+        self.patterns_dir = Path(patterns_dir)
+        self.examples_dir = Path(examples_dir)
+        self.log_dir = Path("data/log")
+        
+        # Create directories if they don't exist
+        if not self.patterns_dir.exists():
+            self.patterns_dir.mkdir(parents=True, exist_ok=True)
+        if not self.examples_dir.exists():
+            self.examples_dir.mkdir(parents=True, exist_ok=True)
+        if not self.log_dir.exists():
+            self.log_dir.mkdir(parents=True, exist_ok=True)
+            
+        self.template_path = self.examples_dir / "template.json"
         
         # Store all patterns in an easy-to-use format
         self.patterns: Dict[str, Dict[str, List]] = {}
-        
-        # Ensure log directory exists
-        os.makedirs(self.log_dir, exist_ok=True)
         
         # Load template for validation
         self.template = self._load_template()
@@ -77,12 +83,12 @@ class PatternReader:
         pattern_files = []
         
         # Get all .json files in patterns directory
-        json_files = glob.glob(os.path.join(self.patterns_dir, "*.json"))
+        json_files = list(self.patterns_dir.glob("*.json"))
         
         for file_path in json_files:
             # Skip files in examples directory
-            if self.examples_dir not in file_path:
-                pattern_files.append(file_path)
+            if self.examples_dir not in file_path.parents:
+                pattern_files.append(str(file_path))
         
         return pattern_files
     
@@ -190,7 +196,7 @@ class PatternReader:
     def _log_validation_results(self, results: List[str], timestamp: str, valid_count: int, total_count: int):
         """Log validation results to file."""
         log_filename = f"analysis_{timestamp}.log"
-        log_path = os.path.join(self.log_dir, log_filename)
+        log_path = self.log_dir / log_filename
         
         try:
             with open(log_path, 'w', encoding='utf-8') as f:
