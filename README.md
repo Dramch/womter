@@ -84,7 +84,7 @@ FRENCH_TERMS=(introduce términos en francés, listas cortas y precisas para red
 GERMAN_TERMS=(introduce términos en alemán, listas cortas y precisas para reducir ruido y evitar límites de longitud en queries)
 ARABIC_TERMS=(introduce términos en árabe, listas cortas y precisas para reducir ruido y evitar límites de longitud en queries)
 
-4. FLUJO DE TRABAJO (end to end)
+4.FLUJO DE TRABAJO (end to end)
 PASO 1: recolectar API
 cd api
 make start          # Windows/macOS/Linux (usa ../venv)
