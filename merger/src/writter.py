@@ -2,7 +2,7 @@
 """
 Data writer for the merger application.
 
-This module writes data from a dictionary to an XLSM file with language-specific tabs
+This module writes data from a dictionary to an XLSX file with language-specific tabs
 and an "all" tab containing all the data. It preserves the original column order
 and handles Excel file creation efficiently.
 """
@@ -97,7 +97,7 @@ class DataWriter:
                       filename: Optional[str] = None,
                       include_all_tab: bool = True) -> str:
         """
-        Write data to an XLSM file with language-specific tabs and optional "all" tab.
+        Write data to an XLSX file with language-specific tabs and optional "all" tab.
         
         Args:
             language_data (Dict[str, pd.DataFrame]): Dictionary with language names as keys and DataFrames as values
@@ -114,13 +114,13 @@ class DataWriter:
         # Generate filename if not provided
         if filename is None:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            filename = f"merged_data_{timestamp}.xlsm"
+            filename = f"merged_data_{timestamp}.xlsx"
         
-        # Ensure .xlsm extension
-        if not filename.endswith('.xlsm'):
-            filename = filename.replace('.xlsx', '.xlsm').replace('.xls', '.xlsm')
-            if not filename.endswith('.xlsm'):
-                filename += '.xlsm'
+        # Ensure .xlsx extension
+        if not filename.endswith('.xlsx'):
+            filename = filename.replace('.xlsm', '.xlsx').replace('.xls', '.xlsx')
+            if not filename.endswith('.xlsx'):
+                filename += '.xlsx'
         
         filepath = os.path.join(self.output_dir, filename)
         
@@ -131,7 +131,7 @@ class DataWriter:
                 logger.error("Could not determine column order")
                 return ""
             
-            # Create ExcelWriter with XLSM format
+            # Create ExcelWriter with XLSX format
             with pd.ExcelWriter(filepath, engine='openpyxl') as writer:
                 
                 # Write each language to its own tab
@@ -153,7 +153,7 @@ class DataWriter:
                 if include_all_tab:
                     self._write_all_tab(writer, language_data, column_order)
                 
-            logger.info(f"Successfully created XLSM file: {filepath}")
+            logger.info(f"Successfully created XLSX file: {filepath}")
             return filepath
             
         except Exception as e:
