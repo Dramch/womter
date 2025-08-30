@@ -24,7 +24,11 @@ ifeq ($(OS),Windows_NT)
 	@$(PIP) install -e .
 
   start: develop copy-latest
-	@echo "Use 'make start-analyzer' to run the analyzer"
+	@echo "Cleaning previous log files..."
+	@if exist data\logs rmdir /s /q data\logs
+	@mkdir data\logs
+	@echo "Running analyzer..."
+	@$(PY) src/main.py
 
   start-analyzer: develop
 	@make -C analyzer run
@@ -92,7 +96,11 @@ else
 	@$(PIP) install -e .
 
   start: develop, copy-latest
-	@echo "Use 'make start-analyzer' to run the analyzer"
+	@echo "Cleaning previous log files..."
+	@rm -rf data/logs/*
+	@mkdir -p data/logs
+	@echo "Running analyzer..."
+	@$(PY) src/main.py
 
   start-analyzer: develop
 	@make -C analyzer run
